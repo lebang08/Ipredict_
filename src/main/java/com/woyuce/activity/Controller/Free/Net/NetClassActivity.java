@@ -89,11 +89,15 @@ public class NetClassActivity extends BaseActivity
 
     //获取notice的数据，初始传值为null
     private void getNoticeJson() {
+        if (localdate == null || localclass == null) {
+            return;
+        }
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer " + localtoken);
         HashMap<String, String> params = new HashMap<>();
         params.put("exam_time", localdate);
         params.put("class_type", localclass);
+        LogUtil.w(localclass + localdate);
         HttpUtil.post(Constants.URL_POST_NET_NOTICE, headers, params, Constants.ACTIVITY_NET, new RequestInterface() {
             @Override
             public void doSuccess(String result) {

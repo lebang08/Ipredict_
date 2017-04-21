@@ -8,8 +8,6 @@ import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -27,6 +25,7 @@ import com.woyuce.activity.Utils.LogUtil;
 import com.woyuce.activity.Utils.PreferenceUtil;
 
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * 全局应用程序类：用于保存和调用全局应用配置及访问网络数据
@@ -44,25 +43,25 @@ public class AppContext extends Application {
     private static AppContext appContext = null;
     private Display display;
 
-    private static RequestQueue mQueue;
+//    private static RequestQueue mQueue;
 
     public static AppContext getInstance() {
         return appContext;
     }
 
-    public static RequestQueue getHttpQueue() {
-        return mQueue;
-    }
+//    public static RequestQueue getHttpQueue() {
+//        return mQueue;
+//    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         appContext = this;
         //现用网络框架volley并发队列
-        mQueue = Volley.newRequestQueue(getApplicationContext());
+//        mQueue = Volley.newRequestQueue(getApplicationContext());
 
         //因Https等原因准备替用的网络框架OkGo
-//        initOkgo();
+        initOkgo();
 
         //配置图片加载框架ImageLoader
         initImageLoader(this);
@@ -116,7 +115,7 @@ public class AppContext extends Application {
 
                     // 打开该调试开关,打印级别INFO,并不是异常,是为了显眼,不需要就不要加入该行
                     // 最后的true表示是否打印okgo的内部异常，一般打开方便调试错误
-//                    .debug("ling", Level.INFO, true)
+                    .debug("ling", Level.INFO, true)
 
                     //如果使用默认的 60秒,以下三行也不需要传
                     .setConnectTimeout(OkGo.DEFAULT_MILLISECONDS)  //全局的连接超时时间
@@ -130,7 +129,7 @@ public class AppContext extends Application {
 //                    .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)
 
                     //可以全局统一设置超时重连次数,默认为三次,那么最差的情况会请求4次(一次原始请求,三次重连请求),不需要可以设置为0
-                    .setRetryCount(3);
+                    .setRetryCount(0);
 
             //如果不想让框架管理cookie（或者叫session的保持）,以下不需要
 //              .setCookieStore(new MemoryCookieStore())            //cookie使用内存缓存（app退出后，cookie消失）

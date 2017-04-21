@@ -16,15 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alipay.sdk.app.PayTask;
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
-import com.woyuce.activity.AppContext;
 import com.woyuce.activity.BaseActivity;
 import com.woyuce.activity.Common.Constants;
 import com.woyuce.activity.Controller.Main.MainActivity;
@@ -97,6 +91,12 @@ public class StoreOrderActivity extends BaseActivity implements View.OnClickList
 
     public void back(View view) {
         finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        HttpUtil.removeTag(Constants.ACTIVITY_STORE_ORDER);
     }
 
     @Override
@@ -181,14 +181,13 @@ public class StoreOrderActivity extends BaseActivity implements View.OnClickList
      */
     public void toPay(final String method, final String url) {
         progressdialogshow(this);
-        StringRequest payRequest = new StringRequest(Request.Method.POST,
-                Constants.URL_POST_STORE_ORDER_TO_PAY + "?id=" + local_order_id + "&userid=" + local_user_id,
-                new Response.Listener<String>() {
+        HttpUtil.post(Constants.URL_POST_STORE_ORDER_TO_PAY + "?id=" + local_order_id + "&userid=" + local_user_id
+                , Constants.ACTIVITY_STORE_ORDER, new RequestInterface() {
                     @Override
-                    public void onResponse(String s) {
+                    public void doSuccess(String result) {
                         try {
                             JSONObject obj;
-                            obj = new JSONObject(s);
+                            obj = new JSONObject(result);
                             if (obj.getString("code").equals("0")) {
                                 //金币支付成功,结束
                                 progressdialogcancel();
@@ -218,28 +217,23 @@ public class StoreOrderActivity extends BaseActivity implements View.OnClickList
                             e.printStackTrace();
                         }
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                LogUtil.i("volleyError = " + volleyError);
-                progressdialogcancel();
-            }
-        });
-        payRequest.setTag(Constants.ACTIVITY_STORE_ORDER);
-//        payRequest.setRetryPolicy(new DefaultRetryPolicy(1000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        AppContext.getHttpQueue().add(payRequest);
+                });
     }
 
     /**
      * 支付请求第二步，现金支付宝支付
      */
     private void cashRequest(final String method, String url) {
-        StringRequest cashRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("paytype", method);
+        params.put("id", local_order_id);
+        HttpUtil.post(url, params, Constants.ACTIVITY_STORE_ORDER, new RequestInterface() {
             @Override
-            public void onResponse(String s) {
+            public void doSuccess(String result) {
+                LogUtil.i("cashRequest = " + result);
                 try {
                     JSONObject obj;
-                    obj = new JSONObject(s);
+                    obj = new JSONObject(result);
                     progressdialogcancel();
                     if (obj.getString("code").equals("0")) {
                         //**************如果是阿里支付****************
@@ -285,43 +279,29 @@ public class StoreOrderActivity extends BaseActivity implements View.OnClickList
 //                            ToastUtil.showMessage(StoreOrderActivity.this, "去调微信支付吧 = " + b);
                         }
                     } else {
-                        ToastUtil.showMessage(StoreOrderActivity.this, "调用支付宝或微信失败");
-                        LogUtil.i(s);
+                        ToastUtil.showMessage(StoreOrderActivity.this, "支付唤起失败");
+                        LogUtil.i(result);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                ToastUtil.showMessage(StoreOrderActivity.this, "支付失败");
-                progressdialogcancel();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap<String, String> map = new HashMap<>();
-                map.put("paytype", method);
-                map.put("id", local_order_id);
-                return map;
-            }
-        };
-        cashRequest.setTag(Constants.ACTIVITY_STORE_ORDER);
-//        cashRequest.setRetryPolicy(new DefaultRetryPolicy(1000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        AppContext.getHttpQueue().add(cashRequest);
+        });
     }
 
     /**
      * 校验支付宝回调结果
      */
     private void validRequest(final String pay_result) {
-        StringRequest validRequest = new StringRequest(Request.Method.POST, Constants.URL_POST_STORE_ORDER_TO_ALI_VALID, new Response.Listener<String>() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("", pay_result);
+        HttpUtil.post(Constants.URL_POST_STORE_ORDER_TO_ALI_VALID, params, Constants.ACTIVITY_STORE_ORDER, new RequestInterface() {
             @Override
-            public void onResponse(String s) {
+            public void doSuccess(String result) {
+                LogUtil.i("validRequest = " + result);
                 try {
                     JSONObject obj;
-                    obj = new JSONObject(s);
+                    obj = new JSONObject(result);
                     if (obj.getString("code").equals("0")) {
                         //删除数据库中该表
                         deleteSql();
@@ -351,18 +331,7 @@ public class StoreOrderActivity extends BaseActivity implements View.OnClickList
                     e.printStackTrace();
                 }
             }
-        }, null) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap<String, String> map = new HashMap<>();
-                map.put("", pay_result);
-                LogUtil.i("pay_result = " + pay_result);
-                return map;
-            }
-        };
-        validRequest.setTag(Constants.ACTIVITY_STORE_ORDER);
-//        validRequest.setRetryPolicy(new DefaultRetryPolicy(1000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        AppContext.getHttpQueue().add(validRequest);
+        });
     }
 
     /**

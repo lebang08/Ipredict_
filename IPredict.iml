@@ -64,14 +64,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/Tecent/jni" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Tecent/rs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/Tecent/shaders" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/jni" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestTecent/res" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestTecent/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestTecent/assets" type="java-test-resource" />
@@ -80,6 +72,14 @@
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestTecent/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestTecent/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestTecent/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/jni" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testTecent/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/assets" type="java-resource" />
